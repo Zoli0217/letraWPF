@@ -30,7 +30,14 @@ namespace WpfAppLetra.Models
         public SolidColorBrush Szin { get => szin; }
         public List<int> Lepesek { get => lepesek; }
 
-        public int Pozicio { get => lepesek[lepesek.Count - 1]; }
+        public int Pozicio
+        {
+            get
+            {
+                if (lepesek.Count == 0) return 0;
+                return lepesek[lepesek.Count - 1];
+            }
+        }
 
         public void Lep(int ujmezo)
         {

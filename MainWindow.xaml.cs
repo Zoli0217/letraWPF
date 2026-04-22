@@ -37,13 +37,13 @@ namespace letraWPF
         List<Jatekos> jatekosok = new List<Jatekos>();
         private void regBtn(object sender, RoutedEventArgs e)
         {
-            Jatekos nev = new Jatekos(playerNameTb.Text, szin as SolidColorBrush);
-
             if (playerNameTb.Text == "")
             {
                 MessageBox.Show("Adj meg egy nevet!");
                 return;
             }
+            
+            Jatekos nev = new Jatekos(playerNameTb.Text, szin);
 
             var item = new ListBoxItem()
             {
@@ -56,9 +56,10 @@ namespace letraWPF
             jatekosLb.Items.Add(item);
 
             jatekosNeve.Content = $"jatékos: {nev.Nev}";
+            jatekosNeve.Foreground = nev.Szin;
         }
 
-        int allas = 0;
+        int aktualisJatekosIndex = 0;
         private void Button_Click(object sender, RoutedEventArgs e)
         {   if(jatekosok.Count == 0)
             {
@@ -66,26 +67,36 @@ namespace letraWPF
                 return;
             }
 
+            Jatekos aktualis = jatekosok[aktualisJatekosIndex];
+            jatekosNeve.Content = $"Játékos: {aktualis.Nev}";
+
+
             Random rnd = new Random();
             int dobas = rnd.Next(1, 7);
-            allas += dobas;
+            int ujPozicio = aktualis.Pozicio + dobas;
+            aktualis.Lep(ujPozicio);
 
             eredmenyLb.Content = dobas;
-            Output.Items.Add(allas);
+            Output.Items.Add(ujPozicio);
 
-            if(allas % 10 == 0)
+            if(ujPozicio % 10 == 0)
             {
                 MessageBox.Show("Megcsúsztál, lépj vissza 3 mezőt!");
-                allas -= 3;
-                Output.Items.Add(allas);
+                ujPozicio -= 3;
+                Output.Items.Add(ujPozicio);
             }
 
-            if(allas >= 45)
+            if(ujPozicio >= 45)
             {
                 MessageBox.Show("Nyertél!");
-                allas = 0;
+                aktualis.Ujrakzedes();
                 Output.Items.Clear();
                 eredmenyLb.Content = "";
+            }
+            aktualisJatekosIndex++;
+            if (aktualisJatekosIndex >= jatekosok.Count)
+            {
+                aktualisJatekosIndex = 0;
             }
         }
     }
